@@ -4,6 +4,7 @@ import { Card } from '../ui/Card'
 import { Badge } from '../ui/Badge'
 import type { Expense } from '@/lib/types'
 import { formatCurrency } from '@/lib/calculations'
+import { getInitials, getCreatorColor } from '@/lib/auth'
 import { format } from 'date-fns'
 
 const categoryColors: Record<string, 'blue' | 'orange' | 'purple' | 'green' | 'yellow' | 'red' | 'gray'> = {
@@ -25,6 +26,7 @@ interface ExpenseCardProps {
 
 export function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardProps) {
   const color = categoryColors[expense.category] ?? 'gray'
+  const creatorName = expense.creator_name ?? 'Admin'
 
   return (
     <Card>
@@ -34,9 +36,14 @@ export function ExpenseCard({ expense, onEdit, onDelete }: ExpenseCardProps) {
             <p className="font-medium text-gray-800 text-sm truncate">{expense.name}</p>
             <Badge variant={color}>{expense.category}</Badge>
           </div>
-          <p className="text-xs text-gray-400 mt-0.5">
-            {format(new Date(expense.date), 'dd MMM yyyy')}
-          </p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${getCreatorColor(creatorName)}`}>
+              {getInitials(creatorName)}
+            </div>
+            <p className="text-xs text-gray-400">
+              {creatorName} · {format(new Date(expense.date), 'dd MMM yyyy')}
+            </p>
+          </div>
           {expense.note && (
             <p className="text-xs text-gray-500 mt-1 line-clamp-1">{expense.note}</p>
           )}

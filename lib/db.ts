@@ -1,5 +1,15 @@
 import { createClient } from './supabase/client'
+import { getDisplayName } from './auth'
 import type { Product, Expense, Trip, StockStatus } from './types'
+
+async function getCreatorInfo() {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return {
+    created_by: user?.id ?? null,
+    creator_name: getDisplayName(user),
+  }
+}
 
 // ── Products ──────────────────────────────────────────────────────────────────
 
@@ -25,12 +35,13 @@ export async function getProduct(id: string): Promise<Product | null> {
 }
 
 export async function createProduct(
-  product: Omit<Product, 'id' | 'created_at' | 'updated_at'>
+  product: Omit<Product, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'creator_name'>
 ): Promise<Product> {
   const supabase = createClient()
+  const creator = await getCreatorInfo()
   const { data, error } = await supabase
     .from('products')
-    .insert(product)
+    .insert({ ...product, ...creator })
     .select()
     .single()
   if (error) throw error
@@ -71,12 +82,13 @@ export async function getExpenses(): Promise<Expense[]> {
 }
 
 export async function createExpense(
-  expense: Omit<Expense, 'id' | 'created_at'>
+  expense: Omit<Expense, 'id' | 'created_at' | 'created_by' | 'creator_name'>
 ): Promise<Expense> {
   const supabase = createClient()
+  const creator = await getCreatorInfo()
   const { data, error } = await supabase
     .from('expenses')
-    .insert(expense)
+    .insert({ ...expense, ...creator })
     .select()
     .single()
   if (error) throw error

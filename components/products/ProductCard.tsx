@@ -6,6 +6,7 @@ import { Badge } from '../ui/Badge'
 import { Card } from '../ui/Card'
 import type { ProductWithCosts } from '@/lib/types'
 import { formatCurrency } from '@/lib/calculations'
+import { getInitials, getCreatorColor } from '@/lib/auth'
 
 const statusConfig = {
   in_stock: { label: 'En stock', variant: 'blue' as const },
@@ -17,6 +18,7 @@ export function ProductCard({ product }: { product: ProductWithCosts }) {
   const router = useRouter()
   const status = statusConfig[product.stock_status]
   const displayPrice = product.manual_price ?? product.suggested_mid
+  const creatorName = product.creator_name ?? 'Admin'
 
   return (
     <Card onClick={() => router.push(`/products/${product.id}`)}>
@@ -41,7 +43,12 @@ export function ProductCard({ product }: { product: ProductWithCosts }) {
             </h3>
             <Badge variant={status.variant}>{status.label}</Badge>
           </div>
-          <p className="text-xs text-gray-500 mt-0.5">Qté : {product.quantity}</p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${getCreatorColor(creatorName)}`}>
+              {getInitials(creatorName)}
+            </div>
+            <p className="text-xs text-gray-400">Qté : {product.quantity}</p>
+          </div>
           <div className="mt-2 flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-400">Coût/unité</p>

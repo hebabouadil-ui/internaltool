@@ -9,6 +9,8 @@ export interface Product {
   category: string | null
   stock_status: StockStatus
   manual_price: number | null
+  created_by: string | null
+  creator_name: string | null
   created_at: string
   updated_at: string
 }
@@ -21,6 +23,8 @@ export interface Expense {
   category: string
   note: string | null
   trip_id: string | null
+  created_by: string | null
+  creator_name: string | null
   created_at: string
 }
 
