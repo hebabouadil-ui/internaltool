@@ -46,7 +46,7 @@ export default function ExpensesPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Delete this expense?')) return
+    if (!confirm('Supprimer cette dépense ?')) return
     await deleteExpense(id)
     setExpenses((prev) => prev.filter((e) => e.id !== id))
   }
@@ -70,26 +70,25 @@ export default function ExpensesPage() {
     <div className="max-w-2xl mx-auto px-4 pt-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Expenses</h1>
-          <p className="text-sm text-gray-400">{expenses.length} records</p>
+          <h1 className="text-xl font-bold text-gray-800">Dépenses</h1>
+          <p className="text-sm text-gray-400">{expenses.length} enregistrements</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" onClick={() => setAddingTrip(true)}>
-            + Trip
+            + Voyage
           </Button>
           <Button size="md" onClick={() => setAdding(true)}>
-            <Plus size={16} /> Add
+            <Plus size={16} /> Ajouter
           </Button>
         </div>
       </div>
 
-      {/* Summary */}
       {expenses.length > 0 && (
         <div className="grid grid-cols-2 gap-3">
           <Card>
             <div className="flex items-center gap-2 mb-1">
               <TrendingDown size={16} className="text-orange-500" />
-              <p className="text-xs text-gray-500 font-medium">Total expenses</p>
+              <p className="text-xs text-gray-500 font-medium">Total dépenses</p>
             </div>
             <p className="text-xl font-bold text-gray-800">{formatCurrency(total)}</p>
           </Card>
@@ -97,7 +96,7 @@ export default function ExpensesPage() {
             <Card>
               <div className="flex items-center gap-2 mb-1">
                 <Receipt size={16} className="text-purple-500" />
-                <p className="text-xs text-gray-500 font-medium">Top category</p>
+                <p className="text-xs text-gray-500 font-medium">Catégorie principale</p>
               </div>
               <p className="text-base font-bold text-gray-800">{topCategory[0]}</p>
               <p className="text-xs text-gray-400">{formatCurrency(topCategory[1])}</p>
@@ -106,10 +105,9 @@ export default function ExpensesPage() {
         </div>
       )}
 
-      {/* Category breakdown */}
       {Object.keys(byCategory).length > 0 && (
         <Card>
-          <h2 className="font-semibold text-gray-800 mb-3">By category</h2>
+          <h2 className="font-semibold text-gray-800 mb-3">Par catégorie</h2>
           <div className="space-y-2">
             {Object.entries(byCategory)
               .sort((a, b) => b[1] - a[1])
@@ -131,7 +129,6 @@ export default function ExpensesPage() {
         </Card>
       )}
 
-      {/* Expense list */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="w-7 h-7 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
@@ -139,7 +136,7 @@ export default function ExpensesPage() {
       ) : expenses.length === 0 ? (
         <div className="text-center py-16">
           <Receipt size={40} className="text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 text-sm">No expenses yet. Add your first one!</p>
+          <p className="text-gray-400 text-sm">Pas encore de dépenses. Ajoutez la première !</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -154,13 +151,11 @@ export default function ExpensesPage() {
         </div>
       )}
 
-      {/* Add expense modal */}
-      <Modal open={adding} onClose={() => setAdding(false)} title="Add expense">
+      <Modal open={adding} onClose={() => setAdding(false)} title="Ajouter une dépense">
         <ExpenseForm trips={trips} onSave={handleSave} onCancel={() => setAdding(false)} />
       </Modal>
 
-      {/* Edit expense modal */}
-      <Modal open={!!editing} onClose={() => setEditing(null)} title="Edit expense">
+      <Modal open={!!editing} onClose={() => setEditing(null)} title="Modifier la dépense">
         {editing && (
           <ExpenseForm
             expense={editing}
@@ -171,14 +166,13 @@ export default function ExpensesPage() {
         )}
       </Modal>
 
-      {/* Add trip modal */}
-      <Modal open={addingTrip} onClose={() => setAddingTrip(false)} title="Add trip">
+      <Modal open={addingTrip} onClose={() => setAddingTrip(false)} title="Ajouter un voyage">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Trip name</label>
+            <label className="text-sm font-medium text-gray-700">Nom du voyage</label>
             <input
               className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400"
-              placeholder="e.g. Madrid — May 2025"
+              placeholder="ex : Madrid — Mai 2025"
               value={tripName}
               onChange={(e) => setTripName(e.target.value)}
             />
@@ -193,8 +187,8 @@ export default function ExpensesPage() {
             />
           </div>
           <div className="flex gap-2 pt-2">
-            <Button variant="secondary" fullWidth onClick={() => setAddingTrip(false)}>Cancel</Button>
-            <Button fullWidth onClick={handleAddTrip}>Create trip</Button>
+            <Button variant="secondary" fullWidth onClick={() => setAddingTrip(false)}>Annuler</Button>
+            <Button fullWidth onClick={handleAddTrip}>Créer le voyage</Button>
           </div>
         </div>
       </Modal>

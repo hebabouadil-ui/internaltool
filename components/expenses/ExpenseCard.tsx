@@ -8,13 +8,13 @@ import { format } from 'date-fns'
 
 const categoryColors: Record<string, 'blue' | 'orange' | 'purple' | 'green' | 'yellow' | 'red' | 'gray'> = {
   Transport: 'blue',
-  Fuel: 'orange',
-  Shipping: 'purple',
-  Customs: 'red',
-  Packaging: 'green',
-  Food: 'yellow',
-  Accommodation: 'blue',
-  Other: 'gray',
+  Carburant: 'orange',
+  Livraison: 'purple',
+  Douane: 'red',
+  Emballage: 'green',
+  Nourriture: 'yellow',
+  Hébergement: 'blue',
+  Autre: 'gray',
 }
 
 interface ExpenseCardProps {

@@ -16,9 +16,9 @@ import { calculateProductCosts, formatCurrency, formatPercent } from '@/lib/calc
 import type { Product, Expense, ProductWithCosts } from '@/lib/types'
 
 const statusConfig = {
-  in_stock: { label: 'In Stock', variant: 'blue' as const },
-  ready: { label: 'Ready', variant: 'green' as const },
-  sold: { label: 'Sold', variant: 'gray' as const },
+  in_stock: { label: 'En stock', variant: 'blue' as const },
+  ready: { label: 'Prêt', variant: 'green' as const },
+  sold: { label: 'Vendu', variant: 'gray' as const },
 }
 
 export default function ProductDetailPage() {
@@ -50,7 +50,7 @@ export default function ProductDetailPage() {
   }, [id, router])
 
   async function handleDelete() {
-    if (!confirm('Delete this product?')) return
+    if (!confirm('Supprimer ce produit ?')) return
     await deleteProduct(id)
     router.push('/products')
   }
@@ -84,14 +84,13 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 pt-4 space-y-4 pb-8">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <button onClick={() => router.back()} className="flex items-center gap-1.5 text-gray-500 hover:text-gray-700 transition">
-          <ArrowLeft size={18} /> Back
+          <ArrowLeft size={18} /> Retour
         </button>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" onClick={() => setEditing(true)}>
-            <Pencil size={14} /> Edit
+            <Pencil size={14} /> Modifier
           </Button>
           <Button variant="danger" size="sm" onClick={handleDelete}>
             <Trash2 size={14} />
@@ -99,7 +98,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Product hero */}
       <Card>
         <div className="flex gap-4">
           <div className="w-20 h-20 rounded-2xl bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
@@ -119,11 +117,11 @@ export default function ProductDetailPage() {
             )}
             <div className="flex gap-4 mt-2">
               <div>
-                <p className="text-xs text-gray-400">Qty</p>
+                <p className="text-xs text-gray-400">Qté</p>
                 <p className="text-sm font-semibold text-gray-700">{product.quantity}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-400">Buy price</p>
+                <p className="text-xs text-gray-400">Prix d'achat</p>
                 <p className="text-sm font-semibold text-gray-700">{formatCurrency(product.purchase_price)}</p>
               </div>
             </div>
@@ -131,68 +129,65 @@ export default function ProductDetailPage() {
         </div>
       </Card>
 
-      {/* Cost breakdown */}
       <Card>
         <h2 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <DollarSign size={16} className="text-indigo-500" /> Cost Breakdown
+          <DollarSign size={16} className="text-indigo-500" /> Détail des coûts
         </h2>
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Purchase total</span>
+            <span className="text-gray-500">Achat total</span>
             <span className="font-medium text-gray-800">{formatCurrency(product.total_purchase_cost)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Expenses share</span>
+            <span className="text-gray-500">Part des dépenses</span>
             <span className="font-medium text-orange-600">{formatCurrency(product.allocated_expenses)}</span>
           </div>
           <div className="h-px bg-gray-100" />
           <div className="flex justify-between text-sm">
-            <span className="font-semibold text-gray-800">Real total cost</span>
+            <span className="font-semibold text-gray-800">Coût total réel</span>
             <span className="font-bold text-gray-800">{formatCurrency(product.real_cost_total)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="font-semibold text-gray-800">Cost per unit</span>
+            <span className="font-semibold text-gray-800">Coût par unité</span>
             <span className="font-bold text-indigo-600">{formatCurrency(product.cost_per_unit)}</span>
           </div>
         </div>
       </Card>
 
-      {/* Suggested prices */}
       <Card>
         <h2 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <Tag size={16} className="text-indigo-500" /> Suggested Selling Prices
+          <Tag size={16} className="text-indigo-500" /> Prix de vente suggérés
         </h2>
         <div className="grid grid-cols-3 gap-2">
           {[
-            { label: 'Conservative', price: product.suggested_low, margin: 30, color: 'bg-yellow-50 border-yellow-200' },
-            { label: 'Balanced', price: product.suggested_mid, margin: 50, color: 'bg-blue-50 border-blue-200' },
+            { label: 'Prudent', price: product.suggested_low, margin: 30, color: 'bg-yellow-50 border-yellow-200' },
+            { label: 'Équilibré', price: product.suggested_mid, margin: 50, color: 'bg-blue-50 border-blue-200' },
             { label: 'Premium', price: product.suggested_high, margin: 80, color: 'bg-green-50 border-green-200' },
           ].map(({ label, price, margin, color }) => (
             <div key={label} className={`rounded-xl p-3 border text-center ${color}`}>
               <p className="text-xs font-medium text-gray-500 mb-1">{label}</p>
               <p className="text-base font-bold text-gray-800">{formatCurrency(price)}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{margin}% margin</p>
+              <p className="text-xs text-gray-400 mt-0.5">{margin}% marge</p>
             </div>
           ))}
         </div>
       </Card>
 
-      {/* Custom price + live profit */}
       <Card>
         <h2 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <TrendingUp size={16} className="text-indigo-500" /> Live Profit Calculator
+          <TrendingUp size={16} className="text-indigo-500" /> Calculateur de bénéfice
         </h2>
         <div className="flex gap-2 mb-4">
           <input
             type="number"
             min="0"
             step="1"
-            placeholder={`Suggested: ${Math.round(product.suggested_mid)}`}
+            placeholder={`Suggéré : ${Math.round(product.suggested_mid)}`}
             value={customPrice}
             onChange={(e) => setCustomPrice(e.target.value)}
             className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
           />
-          <Button size="sm" onClick={handleSaveCustomPrice}>Save price</Button>
+          <Button size="sm" onClick={handleSaveCustomPrice}>Sauvegarder</Button>
         </div>
 
         {(() => {
@@ -205,19 +200,19 @@ export default function ProductDetailPage() {
           return (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Profit per unit</span>
+                <span className="text-gray-500">Bénéfice par unité</span>
                 <span className={`font-semibold ${isPos ? 'text-green-600' : 'text-red-500'}`}>
                   {formatCurrency(profitUnit)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Total profit ({product.quantity} units)</span>
+                <span className="text-gray-500">Bénéfice total ({product.quantity} unités)</span>
                 <span className={`font-bold ${isPos ? 'text-green-600' : 'text-red-500'}`}>
                   {formatCurrency(profitTotal)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Margin</span>
+                <span className="text-gray-500">Marge</span>
                 <span className={`font-semibold ${isPos ? 'text-green-600' : 'text-red-500'}`}>
                   {formatPercent(margin)}
                 </span>
@@ -233,7 +228,7 @@ export default function ProductDetailPage() {
         })()}
       </Card>
 
-      <Modal open={editing} onClose={() => setEditing(false)} title="Edit product">
+      <Modal open={editing} onClose={() => setEditing(false)} title="Modifier le produit">
         <ProductForm product={product} onSave={handleSave} onCancel={() => setEditing(false)} />
       </Modal>
     </div>

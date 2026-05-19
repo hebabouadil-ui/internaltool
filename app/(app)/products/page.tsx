@@ -52,20 +52,19 @@ export default function ProductsPage() {
     <div className="max-w-2xl mx-auto px-4 pt-5">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">Products</h1>
-          <p className="text-sm text-gray-400">{products.length} items tracked</p>
+          <h1 className="text-xl font-bold text-gray-800">Produits</h1>
+          <p className="text-sm text-gray-400">{products.length} articles suivis</p>
         </div>
         <Button onClick={() => setAdding(true)} size="md">
-          <Plus size={16} /> Add
+          <Plus size={16} /> Ajouter
         </Button>
       </div>
 
-      {/* Search */}
       <div className="relative mb-4">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 bg-white"
-          placeholder="Search products…"
+          placeholder="Rechercher un produit…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -79,7 +78,7 @@ export default function ProductsPage() {
         <div className="text-center py-16">
           <Package size={40} className="text-gray-200 mx-auto mb-3" />
           <p className="text-gray-400 text-sm">
-            {search ? 'No products match your search' : 'No products yet. Add your first one!'}
+            {search ? 'Aucun produit ne correspond à votre recherche' : 'Pas encore de produits. Ajoutez le premier !'}
           </p>
         </div>
       ) : (
@@ -90,7 +89,7 @@ export default function ProductsPage() {
         </div>
       )}
 
-      <Modal open={adding} onClose={() => setAdding(false)} title="Add product">
+      <Modal open={adding} onClose={() => setAdding(false)} title="Ajouter un produit">
         <ProductForm onSave={handleSave} onCancel={() => setAdding(false)} />
       </Modal>
     </div>

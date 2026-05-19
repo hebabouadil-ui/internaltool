@@ -16,9 +16,9 @@ interface ProductFormProps {
 }
 
 const statusOptions = [
-  { value: 'in_stock', label: 'In Stock' },
-  { value: 'ready', label: 'Ready to list' },
-  { value: 'sold', label: 'Sold' },
+  { value: 'in_stock', label: 'En stock' },
+  { value: 'ready', label: 'Prêt à lister' },
+  { value: 'sold', label: 'Vendu' },
 ]
 
 const categoryOptions = PRODUCT_CATEGORIES.map((c) => ({ value: c, label: c }))
@@ -45,11 +45,11 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) return setError('Product name is required')
+    if (!name.trim()) return setError('Le nom du produit est requis')
     const price = parseFloat(purchasePrice)
     const qty = parseInt(quantity)
-    if (isNaN(price) || price <= 0) return setError('Enter a valid purchase price')
-    if (isNaN(qty) || qty <= 0) return setError('Enter a valid quantity')
+    if (isNaN(price) || price <= 0) return setError("Entrez un prix d'achat valide")
+    if (isNaN(qty) || qty <= 0) return setError('Entrez une quantité valide')
 
     setLoading(true)
     setError('')
@@ -81,7 +81,7 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
 
       onSave(saved)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(err instanceof Error ? err.message : 'Une erreur s\'est produite')
     } finally {
       setLoading(false)
     }
@@ -109,7 +109,7 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
           ) : (
             <div className="flex flex-col items-center gap-1 text-gray-400">
               <Camera size={24} />
-              <span className="text-xs">Add photo</span>
+              <span className="text-xs">Ajouter photo</span>
             </div>
           )}
         </div>
@@ -123,15 +123,15 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
       </div>
 
       <Input
-        label="Product name *"
-        placeholder="e.g. Nike Air Force 1"
+        label="Nom du produit *"
+        placeholder="ex : Nike Air Force 1"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
       <div className="grid grid-cols-2 gap-3">
         <Input
-          label="Purchase price *"
+          label="Prix d'achat *"
           type="number"
           min="0"
           step="0.01"
@@ -141,7 +141,7 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
           onChange={(e) => setPurchasePrice(e.target.value)}
         />
         <Input
-          label="Quantity *"
+          label="Quantité *"
           type="number"
           min="1"
           placeholder="1"
@@ -151,26 +151,26 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
       </div>
 
       <Select
-        label="Category"
+        label="Catégorie"
         options={categoryOptions}
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        placeholder="Select category"
+        placeholder="Choisir une catégorie"
       />
 
       <Select
-        label="Stock status"
+        label="Statut du stock"
         options={statusOptions}
         value={stockStatus}
         onChange={(e) => setStockStatus(e.target.value as StockStatus)}
       />
 
       <Input
-        label="Manual selling price (optional)"
+        label="Prix de vente manuel (optionnel)"
         type="number"
         min="0"
         step="0.01"
-        placeholder="Leave blank to use suggested price"
+        placeholder="Laisser vide pour utiliser le prix suggéré"
         suffix="MAD"
         value={manualPrice}
         onChange={(e) => setManualPrice(e.target.value)}
@@ -180,10 +180,10 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
 
       <div className="flex gap-2 pt-2">
         <Button type="button" variant="secondary" fullWidth onClick={onCancel}>
-          Cancel
+          Annuler
         </Button>
         <Button type="submit" fullWidth loading={loading}>
-          {product ? 'Save changes' : 'Add product'}
+          {product ? 'Enregistrer' : 'Ajouter le produit'}
         </Button>
       </div>
     </form>

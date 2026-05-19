@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ImportTracker — Business Control',
-  description: 'Private internal tool for tracking imports, expenses and profit',
+  title: 'ImportTracker — Gestion Commerciale',
+  description: 'Outil interne privé pour suivre les importations, dépenses et bénéfices',
 }
 
 export const viewport: Viewport = {

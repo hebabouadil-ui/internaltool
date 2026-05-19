@@ -8,9 +8,9 @@ import type { ProductWithCosts } from '@/lib/types'
 import { formatCurrency } from '@/lib/calculations'
 
 const statusConfig = {
-  in_stock: { label: 'In Stock', variant: 'blue' as const },
-  ready: { label: 'Ready', variant: 'green' as const },
-  sold: { label: 'Sold', variant: 'gray' as const },
+  in_stock: { label: 'En stock', variant: 'blue' as const },
+  ready: { label: 'Prêt', variant: 'green' as const },
+  sold: { label: 'Vendu', variant: 'gray' as const },
 }
 
 export function ProductCard({ product }: { product: ProductWithCosts }) {
@@ -41,16 +41,16 @@ export function ProductCard({ product }: { product: ProductWithCosts }) {
             </h3>
             <Badge variant={status.variant}>{status.label}</Badge>
           </div>
-          <p className="text-xs text-gray-500 mt-0.5">Qty: {product.quantity}</p>
+          <p className="text-xs text-gray-500 mt-0.5">Qté : {product.quantity}</p>
           <div className="mt-2 flex items-center justify-between">
             <div>
-              <p className="text-xs text-gray-400">Cost/unit</p>
+              <p className="text-xs text-gray-400">Coût/unité</p>
               <p className="text-sm font-semibold text-gray-700">
                 {formatCurrency(product.cost_per_unit)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-400">Sell at</p>
+              <p className="text-xs text-gray-400">Vendre à</p>
               <p className="text-sm font-bold text-indigo-600">
                 {formatCurrency(displayPrice)}
               </p>

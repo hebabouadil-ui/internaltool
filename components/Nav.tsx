@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Package, Receipt } from 'lucide-react'
 
 const links = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/products', label: 'Products', icon: Package },
-  { href: '/expenses', label: 'Expenses', icon: Receipt },
+  { href: '/', label: 'Tableau de bord', icon: LayoutDashboard },
+  { href: '/products', label: 'Produits', icon: Package },
+  { href: '/expenses', label: 'Dépenses', icon: Receipt },
 ]
 
 export function Nav() {

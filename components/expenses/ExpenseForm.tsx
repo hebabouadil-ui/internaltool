@@ -21,22 +21,22 @@ export function ExpenseForm({ expense, trips, onSave, onCancel }: ExpenseFormPro
   const [name, setName] = useState(expense?.name ?? '')
   const [amount, setAmount] = useState(String(expense?.amount ?? ''))
   const [date, setDate] = useState(expense?.date ?? format(new Date(), 'yyyy-MM-dd'))
-  const [category, setCategory] = useState(expense?.category ?? 'Other')
+  const [category, setCategory] = useState(expense?.category ?? 'Autre')
   const [note, setNote] = useState(expense?.note ?? '')
   const [tripId, setTripId] = useState(expense?.trip_id ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const tripOptions = [
-    { value: '', label: 'No trip / General' },
+    { value: '', label: 'Pas de voyage / Général' },
     ...trips.map((t) => ({ value: t.id, label: t.name })),
   ]
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) return setError('Expense name is required')
+    if (!name.trim()) return setError('Le nom de la dépense est requis')
     const amt = parseFloat(amount)
-    if (isNaN(amt) || amt <= 0) return setError('Enter a valid amount')
+    if (isNaN(amt) || amt <= 0) return setError('Entrez un montant valide')
 
     setLoading(true)
     setError('')
@@ -59,7 +59,7 @@ export function ExpenseForm({ expense, trips, onSave, onCancel }: ExpenseFormPro
       }
       onSave(saved)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      setError(err instanceof Error ? err.message : 'Une erreur s\'est produite')
     } finally {
       setLoading(false)
     }
@@ -68,15 +68,15 @@ export function ExpenseForm({ expense, trips, onSave, onCancel }: ExpenseFormPro
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <Input
-        label="Expense name *"
-        placeholder="e.g. Gas — Madrid trip"
+        label="Nom de la dépense *"
+        placeholder="ex : Carburant — voyage Madrid"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
       <div className="grid grid-cols-2 gap-3">
         <Input
-          label="Amount *"
+          label="Montant *"
           type="number"
           min="0"
           step="0.01"
@@ -94,22 +94,22 @@ export function ExpenseForm({ expense, trips, onSave, onCancel }: ExpenseFormPro
       </div>
 
       <Select
-        label="Category"
+        label="Catégorie"
         options={categoryOptions}
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       />
 
       <Select
-        label="Link to trip (optional)"
+        label="Lier à un voyage (optionnel)"
         options={tripOptions}
         value={tripId}
         onChange={(e) => setTripId(e.target.value)}
       />
 
       <Input
-        label="Note (optional)"
-        placeholder="Additional details..."
+        label="Note (optionnel)"
+        placeholder="Détails supplémentaires..."
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
@@ -118,10 +118,10 @@ export function ExpenseForm({ expense, trips, onSave, onCancel }: ExpenseFormPro
 
       <div className="flex gap-2 pt-2">
         <Button type="button" variant="secondary" fullWidth onClick={onCancel}>
-          Cancel
+          Annuler
         </Button>
         <Button type="submit" fullWidth loading={loading}>
-          {expense ? 'Save changes' : 'Add expense'}
+          {expense ? 'Enregistrer' : 'Ajouter la dépense'}
         </Button>
       </div>
     </form>

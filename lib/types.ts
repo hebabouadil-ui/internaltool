@@ -61,22 +61,22 @@ export interface DashboardStats {
 
 export const EXPENSE_CATEGORIES = [
   'Transport',
-  'Fuel',
-  'Shipping',
-  'Customs',
-  'Packaging',
-  'Food',
-  'Accommodation',
-  'Other',
+  'Carburant',
+  'Livraison',
+  'Douane',
+  'Emballage',
+  'Nourriture',
+  'Hébergement',
+  'Autre',
 ] as const
 
 export const PRODUCT_CATEGORIES = [
-  'Clothing',
-  'Electronics',
-  'Accessories',
-  'Home & Living',
-  'Beauty',
-  'Food & Drinks',
-  'Toys',
-  'Other',
+  'Vêtements',
+  'Électronique',
+  'Accessoires',
+  'Maison & Vie',
+  'Beauté',
+  'Alimentation',
+  'Jouets',
+  'Autre',
 ] as const
