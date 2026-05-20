@@ -20,7 +20,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           className={`
             w-full border rounded-xl px-3 py-2.5 text-sm text-gray-800
             outline-none transition bg-white
-            border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100
+            border-gray-200 focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20
             disabled:bg-gray-50
             ${error ? 'border-red-400' : ''}
             ${className}

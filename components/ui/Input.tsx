@@ -20,7 +20,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className={`
               w-full border rounded-xl px-3 py-2.5 text-sm text-gray-800
               placeholder:text-gray-400 outline-none transition
-              border-gray-200 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100
+              border-gray-200 focus:border-[#C9A84C] focus:ring-2 focus:ring-[#C9A84C]/20
               disabled:bg-gray-50 disabled:text-gray-500
               ${suffix ? 'pr-14' : ''}
               ${error ? 'border-red-400 focus:border-red-400 focus:ring-red-100' : ''}
