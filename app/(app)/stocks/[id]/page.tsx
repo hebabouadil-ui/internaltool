@@ -28,6 +28,9 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
   const [addingProduct, setAddingProduct] = useState(false)
   const [addingExpense, setAddingExpense] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set())
+  const [selectedExpenses, setSelectedExpenses] = useState<Set<string>>(new Set())
+  const [deletingBulk, setDeletingBulk] = useState(false)
 
   useEffect(() => {
     async function load() {
@@ -69,6 +72,7 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
     await deleteProduct(productId)
     const updated = allProducts.filter(p => p.id !== productId)
     setAllProducts(updated)
+    setSelectedProducts(prev => { const n = new Set(prev); n.delete(productId); return n })
     recompute(trip!, updated, allExpenses)
   }
 
@@ -77,8 +81,47 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
     await deleteExpense(expenseId)
     const updated = allExpenses.filter(e => e.id !== expenseId)
     setAllExpenses(updated)
+    setSelectedExpenses(prev => { const n = new Set(prev); n.delete(expenseId); return n })
     recompute(trip!, allProducts, updated)
   }
+
+  async function handleBulkDelete() {
+    const pCount = selectedProducts.size
+    const eCount = selectedExpenses.size
+    if (pCount + eCount === 0) return
+    if (!confirm(`Supprimer ${pCount > 0 ? `${pCount} produit${pCount > 1 ? 's' : ''}` : ''}${pCount > 0 && eCount > 0 ? ' et ' : ''}${eCount > 0 ? `${eCount} dépense${eCount > 1 ? 's' : ''}` : ''} ?`)) return
+    setDeletingBulk(true)
+    await Promise.all([
+      ...[...selectedProducts].map(pid => deleteProduct(pid)),
+      ...[...selectedExpenses].map(eid => deleteExpense(eid)),
+    ])
+    const updatedProducts = allProducts.filter(p => !selectedProducts.has(p.id))
+    const updatedExpenses = allExpenses.filter(e => !selectedExpenses.has(e.id))
+    setAllProducts(updatedProducts)
+    setAllExpenses(updatedExpenses)
+    setSelectedProducts(new Set())
+    setSelectedExpenses(new Set())
+    recompute(trip!, updatedProducts, updatedExpenses)
+    setDeletingBulk(false)
+  }
+
+  function toggleProduct(id: string) {
+    setSelectedProducts(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }
+
+  function toggleExpense(id: string) {
+    setSelectedExpenses(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }
+
+  function selectAllProducts(ids: string[]) {
+    setSelectedProducts(prev => prev.size === ids.length ? new Set() : new Set(ids))
+  }
+
+  function selectAllExpenses(ids: string[]) {
+    setSelectedExpenses(prev => prev.size === ids.length ? new Set() : new Set(ids))
+  }
+
+  const totalSelected = selectedProducts.size + selectedExpenses.size
 
   function handleTripSave(saved: Trip) {
     setTrip(saved)
@@ -204,6 +247,26 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
         )}
       </div>
 
+      {/* Bulk delete bar */}
+      {totalSelected > 0 && (
+        <div className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white rounded-2xl px-4 py-3 flex items-center gap-4 shadow-xl">
+          <span className="text-sm font-medium">{totalSelected} sélectionné{totalSelected > 1 ? 's' : ''}</span>
+          <button
+            onClick={handleBulkDelete}
+            disabled={deletingBulk}
+            className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-3 py-1.5 rounded-xl transition disabled:opacity-50"
+          >
+            <Trash2 size={13} /> Supprimer
+          </button>
+          <button
+            onClick={() => { setSelectedProducts(new Set()); setSelectedExpenses(new Set()) }}
+            className="text-gray-400 hover:text-white text-xs transition"
+          >
+            Annuler
+          </button>
+        </div>
+      )}
+
       {/* Products */}
       <div className="bg-white rounded-2xl border border-gray-100">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
@@ -214,9 +277,19 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
               {stats.products.length} réf · {stats.unit_count} u
             </span>
           </div>
-          <Button size="sm" onClick={() => setAddingProduct(true)}>
-            <Plus size={13} /> Ajouter
-          </Button>
+          <div className="flex items-center gap-2">
+            {stats.products_with_costs.length > 0 && (
+              <button
+                onClick={() => selectAllProducts(stats.products_with_costs.map(p => p.id))}
+                className="text-xs text-gray-400 hover:text-gray-600 transition"
+              >
+                {selectedProducts.size === stats.products_with_costs.length ? 'Désélect.' : 'Tout sélect.'}
+              </button>
+            )}
+            <Button size="sm" onClick={() => setAddingProduct(true)}>
+              <Plus size={13} /> Ajouter
+            </Button>
+          </div>
         </div>
 
         {stats.products_with_costs.length === 0 ? (
@@ -234,6 +307,8 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
                 key={p.id}
                 product={p}
                 customsRate={trip.customs_rate}
+                selected={selectedProducts.has(p.id)}
+                onToggleSelect={() => toggleProduct(p.id)}
                 onDelete={() => handleDeleteProduct(p.id)}
               />
             ))}
@@ -253,9 +328,19 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
               </span>
             )}
           </div>
-          <Button size="sm" variant="secondary" onClick={() => setAddingExpense(true)}>
-            <Plus size={13} /> Ajouter
-          </Button>
+          <div className="flex items-center gap-2">
+            {stats.expenses.length > 0 && (
+              <button
+                onClick={() => selectAllExpenses(stats.expenses.map(e => e.id))}
+                className="text-xs text-gray-400 hover:text-gray-600 transition"
+              >
+                {selectedExpenses.size === stats.expenses.length ? 'Désélect.' : 'Tout sélect.'}
+              </button>
+            )}
+            <Button size="sm" variant="secondary" onClick={() => setAddingExpense(true)}>
+              <Plus size={13} /> Ajouter
+            </Button>
+          </div>
         </div>
 
         {stats.expenses.length === 0 ? (
@@ -268,14 +353,23 @@ export default function StockDetailPage({ params }: { params: Promise<{ id: stri
         ) : (
           <div className="divide-y divide-gray-50">
             {stats.expenses.map((e) => (
-              <div key={e.id} className="px-4 py-3 flex items-center justify-between group">
-                <div>
+              <div
+                key={e.id}
+                className={`px-4 py-3 flex items-center gap-3 group transition ${selectedExpenses.has(e.id) ? 'bg-red-50' : ''}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedExpenses.has(e.id)}
+                  onChange={() => toggleExpense(e.id)}
+                  className="w-4 h-4 rounded accent-red-500 flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-800">{e.name}</p>
                   <p className="text-xs text-gray-400">{e.category} · {format(new Date(e.date), 'd MMM', { locale: fr })}</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-gray-800">{formatCurrency(e.amount)}</p>
-                  <button onClick={() => handleDeleteExpense(e.id)} className="opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-red-50">
+                  <button onClick={() => handleDeleteExpense(e.id)} className="opacity-0 group-hover:opacity-100 transition p-1 rounded hover:bg-red-100">
                     <Trash2 size={13} className="text-red-400" />
                   </button>
                 </div>
@@ -316,7 +410,13 @@ function CostLine({ label, value, color, highlight }: { label: string; value: nu
   )
 }
 
-function ProductRow({ product, customsRate, onDelete }: { product: ProductWithCosts; customsRate: number; onDelete: () => void }) {
+function ProductRow({ product, customsRate, selected, onToggleSelect, onDelete }: {
+  product: ProductWithCosts
+  customsRate: number
+  selected: boolean
+  onToggleSelect: () => void
+  onDelete: () => void
+}) {
   const [expanded, setExpanded] = useState(false)
   const [customPrice, setCustomPrice] = useState('')
 
@@ -331,8 +431,14 @@ function ProductRow({ product, customsRate, onDelete }: { product: ProductWithCo
   return (
     <div>
       {/* Main row */}
-      <div className="px-4 py-3 group">
+      <div className={`px-4 py-3 group transition ${selected ? 'bg-red-50' : ''}`}>
         <div className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelect}
+            className="mt-1.5 w-4 h-4 rounded accent-red-500 flex-shrink-0"
+          />
           {product.image_url ? (
             <div className="w-11 h-11 rounded-xl overflow-hidden relative flex-shrink-0 mt-0.5">
               <Image src={product.image_url} alt={product.name} fill className="object-cover" />
