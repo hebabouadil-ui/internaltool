@@ -44,44 +44,30 @@ export function calculateDashboardStats(
   products: Product[],
   expenses: Expense[]
 ): DashboardStats {
+  const totalProductsCost = products.reduce((sum, p) => sum + p.purchase_price * p.quantity, 0)
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0)
-  const totalInvested = products.reduce(
-    (sum, p) => sum + p.purchase_price * p.quantity,
-    0
-  )
-  const totalUnits = products.reduce((sum, p) => sum + p.quantity, 0)
-  const expensePerUnit = totalUnits > 0 ? totalExpenses / totalUnits : 0
+  // Real total invested = products + all expenses
+  const totalInvested = totalProductsCost + totalExpenses
 
   const allProductsWithCosts = products.map((p) =>
     calculateProductCosts(p, expenses, products)
   )
 
-  const inStockProducts = allProductsWithCosts.filter(
-    (p) => p.stock_status !== 'sold'
-  )
-  const soldProducts = allProductsWithCosts.filter(
-    (p) => p.stock_status === 'sold'
-  )
-
-  const totalInventoryValue = inStockProducts.reduce(
-    (sum, p) => sum + p.real_cost_total,
-    0
-  )
+  const inStockProducts = allProductsWithCosts.filter((p) => p.stock_status !== 'sold')
+  const soldProducts = allProductsWithCosts.filter((p) => p.stock_status === 'sold')
 
   const expectedRevenue = allProductsWithCosts.reduce((sum, p) => {
     const price = p.manual_price ?? p.suggested_mid
     return sum + price * p.quantity
   }, 0)
 
-  const totalRealCost = totalInvested + totalExpenses
-  const estimatedProfit = expectedRevenue - totalRealCost
-  const overallMargin =
-    expectedRevenue > 0 ? (estimatedProfit / expectedRevenue) * 100 : 0
+  const estimatedProfit = expectedRevenue - totalInvested
+  const overallMargin = expectedRevenue > 0 ? (estimatedProfit / expectedRevenue) * 100 : 0
 
   return {
     total_invested: totalInvested,
+    total_products_cost: totalProductsCost,
     total_expenses: totalExpenses,
-    total_inventory_value: totalInventoryValue,
     expected_revenue: expectedRevenue,
     estimated_profit: estimatedProfit,
     overall_margin: overallMargin,

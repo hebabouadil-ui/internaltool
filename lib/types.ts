@@ -53,8 +53,8 @@ export interface ProductWithCosts extends Product {
 
 export interface DashboardStats {
   total_invested: number
+  total_products_cost: number
   total_expenses: number
-  total_inventory_value: number
   expected_revenue: number
   estimated_profit: number
   overall_margin: number
