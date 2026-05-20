@@ -35,9 +35,9 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
-            <span className="text-white font-bold text-xl">IT</span>
+            <span className="text-white font-bold text-xl">M</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">ImportTracker</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Marca Club</h1>
           <p className="text-gray-400 text-sm mt-1">Connectez-vous à votre espace admin</p>
         </div>
 

@@ -40,9 +40,9 @@ export function Nav() {
       <header className="hidden sm:flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100 sticky top-0 z-40">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">IT</span>
+            <span className="text-white text-xs font-bold">M</span>
           </div>
-          <span className="font-semibold text-gray-800">ImportTracker</span>
+          <span className="font-semibold text-gray-800">Marca Club</span>
         </div>
         <nav className="flex items-center gap-1">
           {links.map(({ href, label, icon: Icon }) => {
@@ -80,9 +80,9 @@ export function Nav() {
       <header className="sm:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-40">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
-            <span className="text-white text-xs font-bold">IT</span>
+            <span className="text-white text-xs font-bold">M</span>
           </div>
-          <span className="font-semibold text-gray-800">ImportTracker</span>
+          <span className="font-semibold text-gray-800">Marca Club</span>
         </div>
         <div className="flex items-center gap-2">
           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${avatarColor}`}>
