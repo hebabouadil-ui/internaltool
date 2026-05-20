@@ -3,24 +3,26 @@ import { useEffect, useState } from 'react'
 import { Package, Receipt, ArrowRight, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import { Card } from '@/components/ui/Card'
-import { getProducts, getExpenses } from '@/lib/db'
+import { getProducts, getExpenses, getTrips } from '@/lib/db'
 import { calculateDashboardStats, calculateProductCosts, formatCurrency, formatPercent } from '@/lib/calculations'
 import { getInitials, getCreatorColor } from '@/lib/auth'
-import type { Product, Expense, DashboardStats } from '@/lib/types'
+import type { Product, Expense, Trip, DashboardStats } from '@/lib/types'
 
 export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const [trips, setTrips] = useState<Trip[]>([])
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
       try {
-        const [p, e] = await Promise.all([getProducts(), getExpenses()])
+        const [p, e, t] = await Promise.all([getProducts(), getExpenses(), getTrips()])
         setProducts(p)
         setExpenses(e)
-        setStats(calculateDashboardStats(p, e))
+        setTrips(t)
+        setStats(calculateDashboardStats(p, e, t))
       } finally {
         setLoading(false)
       }
@@ -73,11 +75,20 @@ export default function DashboardPage() {
       <Card>
         <p className="text-xs font-medium text-gray-400 mb-1">Total investi</p>
         <p className="text-3xl font-bold text-gray-800">{formatCurrency(stats.total_invested)}</p>
-        <div className="flex gap-4 mt-3 pt-3 border-t border-gray-50">
+        <div className="flex gap-3 mt-3 pt-3 border-t border-gray-50 flex-wrap">
           <div>
             <p className="text-xs text-gray-400">Produits</p>
             <p className="text-sm font-semibold text-gray-700">{formatCurrency(stats.total_products_cost)}</p>
           </div>
+          {stats.total_customs > 0 && (
+            <>
+              <div className="w-px bg-gray-100" />
+              <div>
+                <p className="text-xs text-gray-400">Douane</p>
+                <p className="text-sm font-semibold text-orange-500">{formatCurrency(stats.total_customs)}</p>
+              </div>
+            </>
+          )}
           <div className="w-px bg-gray-100" />
           <div>
             <p className="text-xs text-gray-400">Dépenses</p>
@@ -86,7 +97,7 @@ export default function DashboardPage() {
           <div className="w-px bg-gray-100" />
           <div>
             <p className="text-xs text-gray-400">Articles</p>
-            <p className="text-sm font-semibold text-gray-700">{stats.total_products} produits</p>
+            <p className="text-sm font-semibold text-gray-700">{stats.total_products}</p>
           </div>
         </div>
       </Card>

@@ -53,7 +53,14 @@ export default function ExpensesPage() {
 
   async function handleAddTrip() {
     if (!tripName.trim()) return
-    const trip = await createTrip({ name: tripName.trim(), date: tripDate })
+    const trip = await createTrip({
+      name: tripName.trim(),
+      date: tripDate,
+      customs_rate: 0,
+      status: 'open',
+      origin: 'Espagne',
+      notes: null,
+    })
     setTrips((prev) => [trip, ...prev])
     setTripName('')
     setAddingTrip(false)

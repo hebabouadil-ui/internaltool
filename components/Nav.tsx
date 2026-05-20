@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Package, Receipt, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, Receipt, Boxes, LogOut } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
@@ -10,6 +10,7 @@ import { LogoMC } from './LogoMC'
 
 const links = [
   { href: '/', label: 'Tableau de bord', icon: LayoutDashboard },
+  { href: '/stocks', label: 'Stocks', icon: Boxes },
   { href: '/products', label: 'Produits', icon: Package },
   { href: '/expenses', label: 'Dépenses', icon: Receipt },
 ]

@@ -6,11 +6,13 @@ import { Input } from '../ui/Input'
 import { Select } from '../ui/Select'
 import { Button } from '../ui/Button'
 import { createProduct, updateProduct, uploadProductImage } from '@/lib/db'
-import type { Product, StockStatus } from '@/lib/types'
+import type { Product, Trip, StockStatus } from '@/lib/types'
 import { PRODUCT_CATEGORIES } from '@/lib/types'
 
 interface ProductFormProps {
   product?: Product
+  trips?: Trip[]
+  defaultTripId?: string
   onSave: (product: Product) => void
   onCancel: () => void
 }
@@ -23,13 +25,14 @@ const statusOptions = [
 
 const categoryOptions = PRODUCT_CATEGORIES.map((c) => ({ value: c, label: c }))
 
-export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
+export function ProductForm({ product, trips, defaultTripId, onSave, onCancel }: ProductFormProps) {
   const [name, setName] = useState(product?.name ?? '')
   const [purchasePrice, setPurchasePrice] = useState(String(product?.purchase_price ?? ''))
   const [quantity, setQuantity] = useState(String(product?.quantity ?? '1'))
   const [category, setCategory] = useState(product?.category ?? '')
   const [stockStatus, setStockStatus] = useState<StockStatus>(product?.stock_status ?? 'in_stock')
   const [manualPrice, setManualPrice] = useState(String(product?.manual_price ?? ''))
+  const [tripId, setTripId] = useState(product?.trip_id ?? defaultTripId ?? '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(product?.image_url ?? null)
   const [loading, setLoading] = useState(false)
@@ -65,6 +68,7 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
         stock_status: stockStatus,
         manual_price: manualPrice ? parseFloat(manualPrice) : null,
         image_url: imageUrl,
+        trip_id: tripId || null,
       }
 
       let saved: Product
@@ -157,6 +161,18 @@ export function ProductForm({ product, onSave, onCancel }: ProductFormProps) {
         onChange={(e) => setCategory(e.target.value)}
         placeholder="Choisir une catégorie"
       />
+
+      {trips && trips.length > 0 && (
+        <Select
+          label="Lier à un stock (optionnel)"
+          options={[
+            { value: '', label: 'Pas de stock' },
+            ...trips.map((t) => ({ value: t.id, label: t.name })),
+          ]}
+          value={tripId}
+          onChange={(e) => setTripId(e.target.value)}
+        />
+      )}
 
       <Select
         label="Statut du stock"

@@ -1,6 +1,6 @@
 import { createClient } from './supabase/client'
 import { getDisplayName } from './auth'
-import type { Product, Expense, Trip, StockStatus } from './types'
+import type { Product, Expense, Trip, StockStatus, TripStatus } from './types'
 
 async function getCreatorInfo() {
   const supabase = createClient()
@@ -32,6 +32,17 @@ export async function getProduct(id: string): Promise<Product | null> {
     .single()
   if (error) return null
   return data
+}
+
+export async function getProductsByTrip(tripId: string): Promise<Product[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('trip_id', tripId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data ?? []
 }
 
 export async function createProduct(
@@ -81,6 +92,17 @@ export async function getExpenses(): Promise<Expense[]> {
   return data ?? []
 }
 
+export async function getExpensesByTrip(tripId: string): Promise<Expense[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('expenses')
+    .select('*')
+    .eq('trip_id', tripId)
+    .order('date', { ascending: false })
+  if (error) throw error
+  return data ?? []
+}
+
 export async function createExpense(
   expense: Omit<Expense, 'id' | 'created_at' | 'created_by' | 'creator_name'>
 ): Promise<Expense> {
@@ -116,7 +138,7 @@ export async function deleteExpense(id: string): Promise<void> {
   if (error) throw error
 }
 
-// ── Trips ─────────────────────────────────────────────────────────────────────
+// ── Trips / Stocks ────────────────────────────────────────────────────────────
 
 export async function getTrips(): Promise<Trip[]> {
   const supabase = createClient()
@@ -126,6 +148,17 @@ export async function getTrips(): Promise<Trip[]> {
     .order('date', { ascending: false })
   if (error) throw error
   return data ?? []
+}
+
+export async function getTrip(id: string): Promise<Trip | null> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('trips')
+    .select('*')
+    .eq('id', id)
+    .single()
+  if (error) return null
+  return data
 }
 
 export async function createTrip(
@@ -139,6 +172,27 @@ export async function createTrip(
     .single()
   if (error) throw error
   return data
+}
+
+export async function updateTrip(
+  id: string,
+  updates: Partial<Omit<Trip, 'id' | 'created_at'>>
+): Promise<Trip> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('trips')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteTrip(id: string): Promise<void> {
+  const supabase = createClient()
+  const { error } = await supabase.from('trips').delete().eq('id', id)
+  if (error) throw error
 }
 
 // ── Image Upload ──────────────────────────────────────────────────────────────

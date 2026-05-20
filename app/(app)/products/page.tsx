@@ -5,22 +5,24 @@ import { ProductCard } from '@/components/products/ProductCard'
 import { ProductForm } from '@/components/products/ProductForm'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
-import { getProducts, getExpenses } from '@/lib/db'
+import { getProducts, getExpenses, getTrips } from '@/lib/db'
 import { calculateProductCosts } from '@/lib/calculations'
-import type { Product, Expense, ProductWithCosts } from '@/lib/types'
+import type { Product, Expense, Trip, ProductWithCosts } from '@/lib/types'
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [expenses, setExpenses] = useState<Expense[]>([])
+  const [trips, setTrips] = useState<Trip[]>([])
   const [search, setSearch] = useState('')
   const [adding, setAdding] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const [p, e] = await Promise.all([getProducts(), getExpenses()])
+      const [p, e, t] = await Promise.all([getProducts(), getExpenses(), getTrips()])
       setProducts(p)
       setExpenses(e)
+      setTrips(t)
       setLoading(false)
     }
     load()
@@ -90,7 +92,7 @@ export default function ProductsPage() {
       )}
 
       <Modal open={adding} onClose={() => setAdding(false)} title="Ajouter un produit">
-        <ProductForm onSave={handleSave} onCancel={() => setAdding(false)} />
+        <ProductForm trips={trips} onSave={handleSave} onCancel={() => setAdding(false)} />
       </Modal>
     </div>
   )
